@@ -1,9 +1,8 @@
-require_relative 'lib/board'
+require_relative 'lib/game'
 
 loop do
-  game = Board.new_game
-  game.play_game
+  Game.new_game
   puts 'Would you like to play again? Y/N'
-  again = gets.chomp
-  break unless again.downcase == 'y'
+  again = gets.chomp.downcase
+  break unless again == 'y'
 end

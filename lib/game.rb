@@ -1,6 +1,6 @@
 # Board instances contain all variables and methods to play a game of tic-tac-toe
 # all methods are private except for "new_game" and "play_game"
-class Board
+class Game
   def initialize
     @board = {
       'a' => ['a', ' ', ' ', ' '],
@@ -12,7 +12,8 @@ class Board
   end
 
   def self.new_game
-    Board.new
+    game = Game.new
+    game.play_game
   end
 
   def play_game
