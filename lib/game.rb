@@ -1,6 +1,10 @@
+# frozen_string_literal: true
+
 # Board instances contain all variables and methods to play a game of tic-tac-toe
 # all methods are private except for "new_game" and "play_game"
 class Game
+  attr_accessor :move, :turn, :board
+
   def initialize
     @board = {
       'a' => ['a', ' ', ' ', ' '],
@@ -9,6 +13,7 @@ class Game
     }
     @turn = 1
     @piece = %w[O X]
+    @move = []
   end
 
   def self.new_game
@@ -18,34 +23,30 @@ class Game
 
   def play_game
     loop do
-      move = take_turn
-      if tie?(move) || winner?(move)
-        finish_game(move)
-        break
-      else
-        @turn += 1
-      end
-    end
-  end
+      take_turn
+      break if tie? || winner?
 
-  private
+      @turn += 1
+    end
+    finish_game
+  end
 
   def take_turn
     loop do
       puts board
-      move = fetch_move
-      if @board.dig(move[0], move[1]) == ' '
-        add_piece(move[0], move[1])
-        return move
+      @move = fetch_move
+      if @board.dig(@move[0], @move[1]) == ' '
+        add_piece(@move[0], @move[1])
+        return
       else
         puts "Sorry, I didn't quite get that."
       end
     end
   end
 
-  def finish_game(move)
+  def finish_game
     puts board
-    if tie?(move)
+    if tie?
       puts 'No winner this time!'
     else
       puts "Congratulations, #{@piece[(@turn % 2)]}s player wins!"
@@ -62,18 +63,15 @@ class Game
     @board[column][row] = @piece[(@turn % 2)]
   end
 
-  def winner?(move)
-    column?(move[0]) ||
-      row?(move[1]) ||
+  def winner?
+    column?(@move[0]) ||
+      row?(@move[1]) ||
       tlbr? ||
       trbl?
   end
 
-  def tie?(move)
-    !winner?(move) &&
-      !@board['a'].include?(' ') &&
-      !@board['b'].include?(' ') &&
-      !@board['c'].include?(' ')
+  def tie?
+    !winner? && @turn == 9
   end
 
   def column?(column)
@@ -95,7 +93,7 @@ class Game
     trbl.uniq.length == 1 && trbl[0] != ' '
   end
 
-  def board
+  def board # rubocop:disable Metrics/AbcSize
     <<~TEXT
          a     b     c#{'  '}
             |     |#{'     '}
