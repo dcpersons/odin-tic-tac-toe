@@ -37,8 +37,6 @@ RSpec.describe Game do
 
     context 'when game is won after 5 turns' do
       before do
-        allow(game).to receive(:take_turn)
-        allow(game).to receive(:tie?).and_return(false)
         allow(game).to receive(:winner?).and_return(false, false, false, false, true)
       end
 
@@ -81,48 +79,40 @@ RSpec.describe Game do
 
   describe '#row?' do
     before do
-      game.move = ['a', 1]
+      game.board = {
+        'a' => %w[a X X X],
+        'b' => %w[b X O X],
+        'c' => %w[c X X X]
+      }
     end
 
     it 'returns true if all pieces of last move\'s row are the same' do
-      game.board = {
-        'a' => %w[a X X X],
-        'b' => %w[b O O X],
-        'c' => %w[c X O O]
-      }
+      game.move = ['a', 1]
       expect(game.row?).to be true
     end
 
     it 'returns false if all pieces of last move\'s row are not the same' do
-      game.board = {
-        'a' => %w[a X O X],
-        'b' => %w[b X X X],
-        'c' => %w[c X X X]
-      }
+      game.move = ['b', 1]
       expect(game.row?).to be false
     end
   end
 
   describe '#column?' do
     before do
-      game.move = ['a', 1]
+      game.board = {
+        'a' => %w[a X X X],
+        'b' => %w[b X O X],
+        'c' => %w[c X X X]
+      }
     end
 
     it 'returns true if all pieces of last move\'s column are the same' do
-      game.board = {
-        'a' => %w[a X O X],
-        'b' => %w[b X O O],
-        'c' => %w[c X X O]
-      }
+      game.move = ['a', 1]
       expect(game.column?).to be true
     end
 
     it 'returns false if all pieces of last move\'s column are not the same' do
-      game.board = {
-        'a' => %w[a X X X],
-        'b' => %w[b O X X],
-        'c' => %w[c X X X]
-      }
+      game.move = ['a', 2]
       expect(game.column?).to be false
     end
   end
@@ -213,10 +203,10 @@ RSpec.describe Game do
 
     context 'when user inputs an invalid move twice, then a valid move' do
       before do
-        invalid1 = ['a', 1]
-        invalid2 = ['c', 9]
+        invalid_1 = ['a', 1]
+        invalid_2 = ['c', 9]
         valid = ['a', 3]
-        allow(game).to receive(:fetch_move).and_return(invalid1, invalid2, valid)
+        allow(game).to receive(:fetch_move).and_return(invalid_1, invalid_2, valid)
       end
 
       it 'completes the loop and puts an error message twice' do
