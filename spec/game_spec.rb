@@ -5,11 +5,14 @@ require_relative '../lib/game'
 RSpec.describe Game do
   subject(:game) { described_class.new }
 
+  before do
+    allow(game).to receive(:puts)
+  end
+
   describe '#play_game' do
     context 'when game is 1 move away from ending' do
       before do
         allow(game).to receive(:gets).and_return('a 1')
-        allow(game).to receive(:puts)
       end
 
       it 'exits loop when game is a tie' do
@@ -37,7 +40,6 @@ RSpec.describe Game do
     context 'when game is won after 5 turns' do
       before do
         allow(game).to receive(:gets).and_return('a1', 'a2', 'b1', 'b2', 'c1')
-        allow(game).to receive(:puts)
       end
 
       it 'ends on turn 5' do
@@ -192,7 +194,6 @@ RSpec.describe Game do
 
   describe '#take_turn' do
     before do
-      allow(game).to receive(:puts)
       allow(game).to receive(:add_piece)
       game.board = {
         'a' => ['a', 'X', 'O', ' '],
