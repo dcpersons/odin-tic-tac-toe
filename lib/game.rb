@@ -33,7 +33,7 @@ class Game
 
   def take_turn
     loop do
-      puts board
+      put_board
       @move = fetch_move
       if @board.dig(@move[0], @move[1]) == ' '
         add_piece
@@ -44,7 +44,7 @@ class Game
   end
 
   def finish_game
-    puts board
+    put_board
     if tie?
       puts 'No winner this time!'
     else
@@ -78,8 +78,8 @@ class Game
   end
 
   def column?
-    row = [@board['a'][@move[1]], @board['b'][@move[1]], @board['c'][@move[1]]]
-    row.uniq.length == 1
+    column = [@board['a'][@move[1]], @board['b'][@move[1]], @board['c'][@move[1]]]
+    column.uniq.length == 1
   end
 
   def tlbr?
@@ -92,7 +92,7 @@ class Game
     trbl.uniq.length == 1 && trbl[0] != ' '
   end
 
-  def board # rubocop:disable Metrics/AbcSize
+  def put_board # rubocop:disable Metrics/AbcSize
     <<~TEXT
          1     2     3#{'  '}
             |     |#{'     '}

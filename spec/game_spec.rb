@@ -6,38 +6,38 @@ RSpec.describe Game do
   subject(:game) { described_class.new }
 
   describe '#play_game' do
-    before do
-      allow(game).to receive(:take_turn)
-      allow(game).to receive(:tie?)
-      allow(game).to receive(:winner?)
-      allow(game).to receive(:finish_game)
-    end
-
-    context 'when game is a tie' do
+    context 'when game is 1 move away from ending' do
       before do
-        allow(game).to receive(:tie?).and_return(true)
+        allow(game).to receive(:gets).and_return('a 1')
+        allow(game).to receive(:puts)
       end
 
       it 'exits loop when game is a tie' do
+        game.board = {
+          'a' => ['a', ' ', 'O', 'O'],
+          'b' => %w[b O X X],
+          'c' => %w[c X X O]
+        }
+        game.turn = 9
         game.play_game
-        expect(game).to have_received(:finish_game)
-      end
-    end
-
-    context 'when game is won' do
-      before do
-        allow(game).to receive(:winner?).and_return(true)
+        expect(game).to have_received(:puts).with('No winner this time!')
       end
 
       it 'exits loop when game is won' do
+        game.board = {
+          'a' => ['a', ' ', ' ', ' '],
+          'b' => %w[b X O O],
+          'c' => %w[c X O X]
+        }
         game.play_game
-        expect(game).to have_received(:finish_game)
+        expect(game).to have_received(:puts).with('Congratulations, Xs player wins!')
       end
     end
 
     context 'when game is won after 5 turns' do
       before do
-        allow(game).to receive(:winner?).and_return(false, false, false, false, true)
+        allow(game).to receive(:gets).and_return('a1', 'a2', 'b1', 'b2', 'c1')
+        allow(game).to receive(:puts)
       end
 
       it 'ends on turn 5' do
@@ -203,10 +203,10 @@ RSpec.describe Game do
 
     context 'when user inputs an invalid move twice, then a valid move' do
       before do
-        invalid_1 = ['a', 1]
-        invalid_2 = ['c', 9]
-        valid = ['a', 3]
-        allow(game).to receive(:fetch_move).and_return(invalid_1, invalid_2, valid)
+        invalid1 = 'a 1'
+        invalid2 = 'c 9'
+        valid = 'a 3'
+        allow(game).to receive(:gets).and_return(invalid1, invalid2, valid)
       end
 
       it 'completes the loop and puts an error message twice' do
