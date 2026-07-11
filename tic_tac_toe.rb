@@ -1,8 +1,12 @@
 require_relative 'lib/game'
 
+Game.new_game
+
 loop do
-  Game.new_game
-  puts 'Would you like to play again? Y/N'
+  puts 'Would you like to play again? (y/n)'
   again = gets.chomp.downcase
-  break unless again == 'y'
+  Game.new_game if again == 'y'
+  break if again == 'n'
+
+  puts 'Sorry, I didn\'t quite get that.' unless again == 'y'
 end

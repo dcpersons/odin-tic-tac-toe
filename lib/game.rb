@@ -36,11 +36,10 @@ class Game
       puts board
       @move = fetch_move
       if @board.dig(@move[0], @move[1]) == ' '
-        add_piece(@move[0], @move[1])
-        return
-      else
-        puts "Sorry, I didn't quite get that."
+        add_piece
+        break
       end
+      puts "Sorry, I didn't quite get that."
     end
   end
 
@@ -59,13 +58,13 @@ class Game
     [move.downcase[/[a-z]/].to_s, move[/\d/].to_i]
   end
 
-  def add_piece(column, row)
-    @board[column][row] = @piece[(@turn % 2)]
+  def add_piece
+    @board[@move[0]][@move[1]] = @piece[(@turn % 2)]
   end
 
   def winner?
-    column?(@move[0]) ||
-      row?(@move[1]) ||
+    column? ||
+      row? ||
       tlbr? ||
       trbl?
   end
@@ -74,13 +73,13 @@ class Game
     !winner? && @turn == 9
   end
 
-  def column?(column)
-    @board[column].uniq.length == 2 && @board[column] != ' '
+  def row?
+    @board[@move[0]].uniq.length == 2
   end
 
-  def row?(row)
-    row = [@board['a'][row], @board['b'][row], @board['c'][row]]
-    row.uniq.length == 1 && row[1] != ' '
+  def column?
+    row = [@board['a'][@move[1]], @board['b'][@move[1]], @board['c'][@move[1]]]
+    row.uniq.length == 1
   end
 
   def tlbr?
@@ -95,15 +94,15 @@ class Game
 
   def board # rubocop:disable Metrics/AbcSize
     <<~TEXT
-         a     b     c#{'  '}
+         1     2     3#{'  '}
             |     |#{'     '}
-      1  #{@board['a'][1]}  |  #{@board['b'][1]}  |  #{@board['c'][1]}#{'  '}
+      a  #{@board['a'][1]}  |  #{@board['a'][2]}  |  #{@board['a'][3]}#{'  '}
        _____|_____|_____
             |     |#{'     '}
-      2  #{@board['a'][2]}  |  #{@board['b'][2]}  |  #{@board['c'][2]}#{'  '}
+      b  #{@board['b'][1]}  |  #{@board['b'][2]}  |  #{@board['b'][3]}#{'  '}
        _____|_____|_____
             |     |#{'     '}
-      3  #{@board['a'][3]}  |  #{@board['b'][3]}  |  #{@board['c'][3]}#{'  '}
+      c  #{@board['c'][1]}  |  #{@board['c'][2]}  |  #{@board['c'][3]}#{'  '}
             |     |#{'     '}
     TEXT
   end
