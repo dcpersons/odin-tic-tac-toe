@@ -6,13 +6,13 @@ RSpec.describe Game do
   subject(:game) { described_class.new }
 
   before do
-    allow(game).to receive(:puts)
+    allow($stdout).to receive(:puts)
   end
 
   describe '#play_game' do
     context 'when game is 1 move away from ending' do
       before do
-        allow(game).to receive(:gets).and_return('a 1')
+        allow(game).to receive(:gets).and_return("a 1\n")
       end
 
       it 'exits loop when game is a tie' do
@@ -22,8 +22,7 @@ RSpec.describe Game do
           'c' => %w[c X X O]
         }
         game.turn = 9
-        game.play_game
-        expect(game).to have_received(:puts).with('No winner this time!')
+        expect { game.play_game }.to output(/No winner this time!/).to_stdout
       end
 
       it 'exits loop when game is won' do
@@ -32,8 +31,7 @@ RSpec.describe Game do
           'b' => %w[b X O O],
           'c' => %w[c X O X]
         }
-        game.play_game
-        expect(game).to have_received(:puts).with('Congratulations, Xs player wins!')
+        expect { game.play_game }.to output(/Xs player wins!/).to_stdout
       end
     end
 
@@ -211,9 +209,8 @@ RSpec.describe Game do
       end
 
       it 'completes the loop and puts an error message twice' do
-        error = "Sorry, I didn't quite get that."
-        game.take_turn
-        expect(game).to have_received(:puts).with(error).twice
+        error = /Sorry, I didn't quite get that./
+        expect { game.take_turn }.to output(include(error, error)).to_stdout
       end
     end
   end

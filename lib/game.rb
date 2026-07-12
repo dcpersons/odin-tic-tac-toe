@@ -12,7 +12,6 @@ class Game
       'c' => ['c', ' ', ' ', ' ']
     }
     @turn = 1
-    @piece = %w[O X]
     @move = []
   end
 
@@ -48,7 +47,7 @@ class Game
     if tie?
       puts 'No winner this time!'
     else
-      puts "Congratulations, #{@piece[(@turn % 2)]}s player wins!"
+      puts "Congratulations, #{piece}s player wins!"
     end
   end
 
@@ -59,7 +58,11 @@ class Game
   end
 
   def add_piece
-    @board[@move[0]][@move[1]] = @piece[(@turn % 2)]
+    @board[@move[0]][@move[1]] = piece
+  end
+
+  def piece
+    %w[O X][@turn % 2]
   end
 
   def winner?
@@ -92,8 +95,8 @@ class Game
     trbl.uniq.length == 1 && trbl[0] != ' '
   end
 
-  def put_board # rubocop:disable Metrics/AbcSize
-    <<~TEXT
+  def put_board # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
+    puts <<~TEXT
          1     2     3#{'  '}
             |     |#{'     '}
       a  #{@board['a'][1]}  |  #{@board['a'][2]}  |  #{@board['a'][3]}#{'  '}
